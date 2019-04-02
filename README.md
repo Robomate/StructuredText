@@ -9,6 +9,8 @@ https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_plc_intro/3
 ###### array with variable length
 https://stefanhenneken.wordpress.com/2016/07/04/iec-61131-3-arrays-mit-variabler-lnge/
 
+http://www.drivesandsystems.com/codesys-array-sorting-for-plc-programs/
+
 #TwinCat2
 
 #connectivity
