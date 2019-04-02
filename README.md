@@ -1,9 +1,13 @@
 # StructuredText
 
+
+# differences TC2 vs TC3
 https://infosys.beckhoff.com/index.php?content=../content/1031/ej2502/2584719371.html&id=
 
 https://infosys.beckhoff.com/english.php?content=../content/1033/tc3_plc_intro/3259158539.html&id=
 
+# array with variable length
+https://stefanhenneken.wordpress.com/2016/07/04/iec-61131-3-arrays-mit-variabler-lnge/
 
 #TwinCat2
 
