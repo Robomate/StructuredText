@@ -4,8 +4,8 @@ VAR
 --------------------------------------------------------------------------------------------------*)
   t_TimerValue_01   	: TIME := T#3S;
   t_TimerValue_02   	: TIME := T#4S;
-	Timer								: TON;
-  Blink								: BOOL;
+  Timer		        : TON;
+  Blink			: BOOL;
   
   
 END_VAR
