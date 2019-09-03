@@ -1,0 +1,35 @@
+VAR
+  (* Pseudo Test Code: Compare Arrays *)
+    c_BATCH_SIZE                    : INT := 216;           (* Set batch size *)
+    a_referenz_array                : ARRAY[0..216] OF INT; (* Init Referenz *)
+    a_batch_01_seq_sortiert         : ARRAY[0..216] OF INT; (* Init sortiertes Batch von WCS *)
+    a_batch_02_seq_nicht_sortiert   : ARRAY[0..216] OF INT; (* Init nicht sortiertes Batch von WCS *)
+    CmpResult  : DINT;
+    
+
+END_VAR
+
+
+(* Simulation WCS Telegramm: Fuelle Arrays mit Pseudo Sequenznummern *)
+FOR i_pos := 1 TO c_BATCH_SIZE DO
+
+	a_referenz_array[i_pos] := i_pos;
+	a_batch_01_seq_sortiert[i_pos] := i_pos;
+	a_batch_02_seq_nicht_sortiert[c_BATCH_SIZE + 1 - i_pos] := i_pos;
+
+END_FOR
+
+(* Ergebnis: Da array sortiert , Sorter nicht notwendig *)
+i_CmpResult_01 := MEMCMP( 	pBuf1:= ADR(a_batch_01_seq_sortiert), (* 0 = Equal, NotEqual: 1 = Greater, -1 = Smaller *)
+        					pBuf2:= ADR(a_referenz_array),
+       				 		n	 := SIZEOF(a_referenz_array));
+
+(* Ergebnis: Da array nicht sortiert , Sorter notwendig *)
+i_CmpResult_02 := MEMCMP( pBuf1:= ADR(a_batch_02_seq_nicht_sortiert), (* 0 = Equal, NotEqual: 1 = Greater, -1 = Smaller *)
+        	     		  pBuf2:= ADR(a_referenz_array),
+       					  n	   := SIZEOF(a_referenz_array));
+
+(* IF i_CmpResult = 0 THEN 
+   .. keine Sortierung notwendig und schick Batch per Notfallprogramm durch Sorter, oder schick durch Bypass direkt zu Packplaetzen etc..
+   ELSE
+   .. Sortierung notwendig mit normalen DFT Sortieralgorithmus *)
