@@ -1,0 +1,73 @@
+PROGRAM P_AMPEL
+VAR
+  (* Traffic Light Simulation, Ampelschaltung    *)
+	wait 	: TON;
+	CNT 	: INT;
+
+	Red_1 	: BOOL;
+	Amber_2 : BOOL;
+	Green_3 : BOOL;
+
+END_VAR
+
+CASE CNT OF
+	0: (* init     *)
+
+		CNT := CNT + 1;
+
+	1: (* Red     *)
+
+		Red_1 := TRUE;
+		Amber_2 := FALSE;
+     	Green_3 := FALSE;
+     
+		wait(IN:=TRUE, PT:=T#5s);
+		
+		IF wait.Q THEN
+			wait(IN:=FALSE);
+			CNT := CNT + 1;
+		END_IF;
+
+  	 2: (* Red and Amber     *)
+   		
+   		Red_1 := TRUE;
+    	Amber_2 := TRUE;
+    	Green_3 := FALSE;
+     
+     	wait(IN:=TRUE, PT:=T#6s);
+
+		IF wait.Q THEN
+			wait(IN:=FALSE);
+			CNT := CNT + 1;
+		END_IF;
+
+   	3:  (*  Green     *)
+
+		Red_1 := FALSE;
+		Amber_2 := FALSE;
+		Green_3 := TRUE;
+     
+     	wait(IN:=TRUE, PT:=T#4s);
+
+     	IF wait.Q THEN
+     		wait(IN:=FALSE);
+     		CNT := CNT + 1;
+     	END_IF;
+
+  	 4: (*  Amber    *)
+
+   		Red_1 := FALSE;
+   		Amber_2 := TRUE;
+   		Green_3 := FALSE;
+
+   		wait(IN:=TRUE, PT:=T#7s);
+
+   		IF wait.Q THEN
+   			wait(IN:=FALSE);
+   			CNT := CNT + 1;
+   		END_IF;
+   		
+	 ELSE
+		CNT := 0;
+
+END_CASE;
