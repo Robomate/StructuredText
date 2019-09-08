@@ -1,0 +1,18 @@
+(* @NESTEDCOMMENTS := 'Yes' *)
+(* @PATH := '\/Projekt' *)
+(* @OBJECTFLAGS := '0, 8' *)
+TYPE ST_Beladeplaetze :
+STRUCT
+	(* array of booleans for start buttons *)
+	a_start_buttons : ARRAY[1..c_MAX_NUM_INDUCTIONS] OF BOOL;
+
+	(* array of booleans for stop buttons *)
+	a_stop_buttons : ARRAY[1..c_MAX_NUM_INDUCTIONS] OF BOOL;
+
+	(* VISU: array of booleans for enable empty beladeplaetze buttons *)
+	a_enable_empty_beladeplaetze : ARRAY[1..c_MAX_NUM_INDUCTIONS] OF BOOL;
+
+
+END_STRUCT
+END_TYPE
+(* @END_DECLARATION := '0' *)
