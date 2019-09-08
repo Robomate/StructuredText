@@ -1,0 +1,129 @@
+FUNCTION_BLOCK FB_detect_state
+(*
+	Dieser FB setzt einen State auf belegt (TRUE) nach einer vorgebenen Zeit.
+*)
+VAR_INPUT
+	ct_TimeReference 	: TIME;  (* Time constant for reference *) 
+	b_input_state 		: BOOL; (* Input which needs to be evaluated *) 
+
+
+END_VAR
+VAR_OUTPUT
+	b_output_state 		: BOOL; (* Output, TRUE if occupied else FALSE *) 
+END_VAR
+VAR
+	r_trig_state 		: R_TRIG; (* Edge detectors: Rise *)
+	f_trig_state		: F_TRIG; (* Edge detectors: Fall *)
+	t_Time_01    		: TIME;
+    t_Time_02    		: TIME;
+    t_Difference     	: TIME;
+END_VAR
+
+(* Edge detectors: Rise and Fall *) 
+r_trig_state(CLK := b_input_state); (* rising edge *)
+f_trig_state(CLK := b_input_state); (* falling edge *)
+
+
+(* Time difference Measurement *) 
+IF r_trig_state.Q THEN
+	t_Time_01 := TIME();
+END_IF
+
+IF f_trig_state.Q THEN
+	t_Time_02 := TIME();
+	t_Difference := t_Time_02 - t_Time_01;
+END_IF
+
+(* Change State of input dependet on time difference measurement *) 
+IF t_Difference > ct_TimeReference  THEN
+	b_output_state  := TRUE; (* state occupied *)
+ELSE
+	b_output_state  := FALSE; (* state free *)
+END_IF
+
+
+(* =========================================================================================== *)
+FUNCTION_BLOCK FB_Blinky
+(*-------------------------------------------------------------------------------------------------
+	Blinky Programm: Change Timer Durations
+--------------------------------------------------------------------------------------------------*)
+VAR_INPUT
+	t_TimerValue_01   	: TIME;
+  	t_TimerValue_02   	: TIME;
+END_VAR
+VAR_OUTPUT
+	b_state 			: BOOL;
+END_VAR
+VAR
+	Timer		        : TON;
+  	Blink				: BOOL;  
+END_VAR
+
+
+IF Blink THEN
+	b_state := TRUE;
+	Timer.PT := t_TimerValue_01;
+ELSE
+	b_state := FALSE;
+    Timer.PT := t_TimerValue_02;	
+END_IF
+
+Timer(IN:=NOT Timer.Q);
+
+Blink := Blink XOR Timer.Q;
+
+(* =========================================================================================== *)
+PROGRAM P_Block_Distribution_522
+
+VAR CONSTANT
+	c_NUM_GREY_LG			: INT := 2; (* max number grey LGs *)
+
+END_VAR
+
+VAR
+
+	fb_blinky_522 			: ARRAY[1..2] OF FB_Blinky; (* Create Pseudo States *)
+	at_times_01				: ARRAY[1..2] OF TIME; (* Create Times *)
+	at_times_02				: ARRAY[1..2] OF TIME; (* Create Times *)
+
+	ct_TimeReference    	: TIME := T#3S;
+	i_pos   				: INT; (* index *)
+	i_init					: INT; (* index first cycle *)
+	afb_detect_greyLG_state : ARRAY[1..2] OF FB_detect_state; (* Detect State for all grey LGs *) 
+	afb_input_state_greyLG  : ARRAY[1..2] OF BOOL; (* Input State for all grey LGs *) 
+	afb_output_state_greyLG : ARRAY[1..2] OF BOOL; (* Output State for all grey LGs *)
+
+END_VAR
+
+(* init array in first cycle *)
+IF i_init = 0 THEN 
+	FOR i_pos := 1 TO c_NUM_GREY_LG DO
+
+		at_times_02[i_pos] := T#2S;
+
+	END_FOR
+	at_times_01[1] := T#3S;
+	at_times_01[2] := T#2S;
+	i_init := i_init + 1;
+END_IF
+
+
+(* Detect State for grey LGs*)
+FOR i_pos := 1 TO c_NUM_GREY_LG DO
+
+	(* ======================================================================= *)
+	(* Create Pseudo States for grey LGs *)
+	fb_blinky_522[i_pos]( t_TimerValue_01 := at_times_01[i_pos],
+				   		  t_TimerValue_02 := at_times_02[i_pos],
+				          b_state  => afb_input_state_greyLG[i_pos]); 
+	(* ======================================================================= *)
+
+
+	(* afb_input_state_greyLG[1] => [521001], Graues LG 3sek delay *)
+	(* afb_input_state_greyLG[2] => [521002], Graues LG 3sek delay *)
+	afb_detect_greyLG_state[i_pos](ct_TimeReference := ct_TimeReference,
+								   b_input_state := afb_input_state_greyLG[i_pos],
+								   b_output_state  => afb_output_state_greyLG[i_pos]);
+
+END_FOR
+
