@@ -14,6 +14,7 @@ http://www.drivesandsystems.com/codesys-array-sorting-for-plc-programs/
 #TwinCat2
 
 #connectivity
+
 https://infosys.beckhoff.com/index.php?content=../content/1031/tccomsyssrv/html/tccomsyssrv_general.htm&id=
 
 https://infosys.beckhoff.com/english.php?content=../content/1033/tcplclibstandard/html/TcPlcLibStandard_String_Functions_Overview.htm&id=
